@@ -1,0 +1,31 @@
+# === 密钥：绝对不能提交 ===
+.env
+.env.local
+.env.*.local
+
+# === 虚拟环境 ===
+.venv/
+venv/
+# 项目根目录下误建的 venv（bin/ lib/ pyvenv.cfg），已由 .venv 取代
+bin/
+lib/
+pyvenv.cfg
+CACHEDIR.TAG
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# === 示例运行时生成的产物 ===
+demo_sales.db
+demo_data/
+exported_agent/
+
+# === 编辑器 / 系统 ===
+.DS_Store
+.idea/
+.vscode/

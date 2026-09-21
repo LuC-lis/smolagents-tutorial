@@ -1,0 +1,22 @@
+[project]
+name = "smol"
+version = "0.1.0"
+description = "smolagents 中文上手示例集（DeepSeek 驱动）"
+readme = "README.md"
+authors = [
+    { name = "陆驰", email = "1401711838@qq.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "ddgs>=9.16.0",
+    "markdownify>=1.2.3",
+    "smolagents[openai]>=1.26.0",
+    "wikipedia-api>=0.16.0",
+]
+
+[project.scripts]
+smol = "smol:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
