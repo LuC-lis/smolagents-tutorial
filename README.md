@@ -1,10 +1,14 @@
 # smolagents 上手笔记
 
-一个能跑的中文教程 + 示例集。每一步都在本机实测跑通过。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
+[![smolagents 1.26.0](https://img.shields.io/badge/smolagents-1.26.0-orange.svg)](https://github.com/huggingface/smolagents)
+
+一个能跑的中文教程 + 示例集。六个分级示例，每一步都在本机实测跑通过。
 
 - Python 3.12 / `smolagents 1.26.0` / 用 `uv` 管理
-- 模型：**DeepSeek**（走 OpenAI 兼容协议），已配在 `.env` 里
-- 想换模型只看 [§5 换模型](#5-换模型)，一行环境变量的事
+- 模型：**DeepSeek**（走 OpenAI 兼容协议），配在 `.env` 里，换成 GPT / Claude / 本地 Ollama 都只改三个环境变量
+- 想直接上手：跳 [§0](#0-从-clone-到跑起来)；想找坑：跳 [§7](#7-常见坑都是实测踩过的)
 
 ---
 
@@ -520,18 +524,27 @@ uv run smolagent --model-type OpenAIModel --api-base https://api.deepseek.com/v1
 ## 10. 文件地图
 
 ```
-smol/
-├── .env                    你的密钥（已配好 DeepSeek）★ 不要提交
-├── .env.example            模板
+smolagents-tutorial/
+├── README.md               你正在看的这份教程
+├── LICENSE                 MIT
+├── pyproject.toml          依赖声明（uv 管理）
+├── uv.lock                 锁定版本，保证 clone 下来装到的一样
+├── .env.example            密钥模板 → 复制成 .env 后填自己的
+├── .env                    你的真密钥 ★ 已被 .gitignore 挡住，不要提交
+│
 ├── _shared.py              build_model()：所有示例共用的 Model 工厂
 ├── demo_tools.py           示例工具（reading_stats + SalesQueryTool）
+│
 ├── 01_hello.py             最小可用 Agent
 ├── 02_custom_tool.py       两种自定义工具写法
 ├── 03_web_research.py      内置联网工具 + planning
 ├── 04_stream_and_hooks.py  流式事件 / 回调记账 / RunResult
 ├── 05_multiturn_and_safety.py  多轮 / 放权 import / 答案质检
 ├── 06_export_and_reload.py     导出成可部署的 Agent 包，再加载回来
-├── src/smol/__init__.py    `uv run smol` 的 CLI 实现（多轮对话模式）
+│
+├── src/smol/__init__.py    `uv run smol` 的 CLI 实现（单次 + 多轮对话）
+├── src/smol/__main__.py    支持 `python -m smol`
+│
 ├── exported_agent/         06 跑完自动生成，可删
 └── demo_sales.db, demo_data/   示例自动生成的假数据，可删
 ```
@@ -542,6 +555,38 @@ smol/
 uv add <包>              # 装依赖（不要用 pip，会破坏 uv.lock）
 uv run python 01_hello.py
 ```
+
+---
+
+## 11. 关于这份教程
+
+**内容都是实测的。** 每个示例都在本机跑通后才写进文档；
+README §7 里每一条“坑”都附了真实的报错文本，不是抄来的。
+遇到不确定的地方，宁愿标“未实测”（如 docker/e2b 沙箱、`push_to_hub`）
+也不猜。
+
+**已知未测的事**（欢迎补）：
+
+- 远程沙箱执行器（`executor_type="docker" / "e2b" / "modal" / "blaxel"）—— 需要额外 extra 和账号
+- `agent.push_to_hub()` —— 需要 `hf auth login`
+- `ToolCallingAgent` —— 只验证了 API 可导入，未跑过完整任务
+- 完全离线路线（Ollama）—— 本机装了 ollama 但没 pull 过模型
+- `DuckDuckGoSearchTool` —— 本机网络不通，无法验证
+
+**版本前提**：`smolagents 1.26.0`。代码各处断言（特别是 §4 C 那三条
+`agent.save()` 的校验规则）都是从这一版的 `tool_validation.py` 读出来的，
+换版本后请以本地源码为准。
+
+欢迎提 issue / PR 补充新发现的坑。
+
+---
+
+## License
+
+本项目采用 [MIT License](LICENSE)，可自由商用、修改、再分发。
+
+文档与示例代码中的事实描述基于 `smolagents 1.26.0`，`smolagents` 本身
+属于 [Hugging Face](https://github.com/huggingface/smolagents)，遵循其各自的许可证。
 
 ---
 
