@@ -8,14 +8,35 @@
 
 ---
 
-## 0. 三十秒上手
+## 0. 从 clone 到跑起来
+
+```bash
+git clone https://github.com/LuC-lis/smolagents-tutorial.git
+cd smolagents-tutorial
+uv sync                    # 装依赖（uv.lock 已锁好）
+cp .env.example .env       # 然后把里面的 key 换成你自己的
+```
+
+`.env` 里就三行，任何 OpenAI 兼容的服务都能填：
+
+```ini
+SMOL_API_KEY=sk-...                      # 你的密钥
+SMOL_API_BASE=https://api.deepseek.com/v1
+SMOL_MODEL=deepseek-flash
+```
+
+> ⚠️ `.env` 已被 `.gitignore` 挡住，不会误传。**但 `.env` 里是真密钥，别手动 `git add -f`。**
+> 没有 key 也能看代码，跑不起来而已。
+
+然后：
 
 ```bash
 uv run smol "2 的 100 次方有多少位数字？"     # 单次跑一个任务
 uv run smol                                   # 进入多轮对话模式（Ctrl-D 退出）
+uv run python 01_hello.py                     # 或按 §2 的顺序读示例
 ```
 
-就这两条。下面全是「为什么」。
+就这几条。下面全是「为什么」。
 
 ---
 
@@ -387,9 +408,11 @@ result.timing       # .start_time / .end_time / .duration
 本机网络到 ddgs 不通。用 `GoogleSearchTool`（本机已配 `SERPAPI_API_KEY`）。
 `add_base_tools=True` 挂的是 DuckDuckGo，本机别用。
 
-**11. 这个仓库的 `.gitignore` 内容是 `*`**
-意味着 `git add .` 什么都不加。要提交得先把 `.gitignore` 改掉，或者 `git add -f <文件>`。
-（大概率是之前误建的）
+**11. `.env` 千万别提交**
+`.env` 里是真的 API key。本仓库的 `.gitignore` 已经挡住了它，
+但如果你的环境里 `.gitignore` 是空的或被人覆盖了，一个 `git add .` + `git push`
+就可能把密钥发到公开仓库 —— **而且删掉 commit 也不算完事**，密钥必须去后台作废重发。
+养成习惯：提交前先 `git status` 看一眼暂存列表里有没有 `.env`。
 
 **12. 工具用生成器表达式 → `agent.save()` 报 `Name 'cell' is undefined`**
 见 §4 C。校验器认识列表推导、`for` 循环，就是不认识生成器表达式。
